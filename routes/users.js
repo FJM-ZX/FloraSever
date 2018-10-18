@@ -19,30 +19,27 @@ router.get('/', function(req, res, next) {
 });
 /* POST users listing. */
 router.post('/', function(req, res, next) {
-  console.log(req.body);
-  if(!reg.body.user || reg.body.pwd){
-    res.writeHead(404, { "Content-Type": "text/plain" });
-    res.end("user and pwd mustbe not empty!");
+  console.log(req.body.user);
+  console.log(req.body.pwd);
+  if(!req.body.user || !req.body.pwd){
+    res.send( 404 );
   }
   MongoClient.connect(url,{useNewUrlParser:true},function(err, db) {
     if(err)
     {
-      res.writeHead(404, { "Content-Type": "text/plain" });
-      res.end(err);
+      res.send(404);
       return;
     }
     var dbase = db.db("floradb");
     var collection = dbase.collection('userAccount');
-    var data = {"user":res.body.user,"pwd":res.body.pwd};
+    var data = {"user":req.body.user,"pwd":req.body.pwd};
     collection.insert(data, function(err, result) {
       if(err)
       {
-        res.writeHead(404, { "Content-Type": "text/plain" });
-        res.end(err);
+        res.send(404);
         return;
       }
-      res.header("Content-Type", "application/json;charset=utf-8");
-      res.send(result);
+      res.send(200);
     });
   });
 });
