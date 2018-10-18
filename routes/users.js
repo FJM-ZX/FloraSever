@@ -17,5 +17,34 @@ router.get('/', function(req, res, next) {
     });
   });
 });
+/* POST users listing. */
+router.post('/', function(req, res, next) {
+  console.log(req.body);
+  if(!reg.body.user || reg.body.pwd){
+    res.writeHead(404, { "Content-Type": "text/plain" });
+    res.end("user and pwd mustbe not empty!");
+  }
+  MongoClient.connect(url,{useNewUrlParser:true},function(err, db) {
+    if(err)
+    {
+      res.writeHead(404, { "Content-Type": "text/plain" });
+      res.end(err);
+      return;
+    }
+    var dbase = db.db("floradb");
+    var collection = dbase.collection('userAccount');
+    var data = {"user":res.body.user,"pwd":res.body.pwd};
+    collection.insert(data, function(err, result) {
+      if(err)
+      {
+        res.writeHead(404, { "Content-Type": "text/plain" });
+        res.end(err);
+        return;
+      }
+      res.header("Content-Type", "application/json;charset=utf-8");
+      res.send(result);
+    });
+  });
+});
 
 module.exports = router;
