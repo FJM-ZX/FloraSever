@@ -19,7 +19,7 @@ router.get('/', function(req, res, next) {
 });
 /* POST users listing. */
 router.post('/', function(req, res, next) {
-  res.header("Content-Type", "text/plain;charset=utf-8");
+  res.header("Content-Type", "application/json;charset=utf-8");
   console.log(req.body.user);
   console.log(req.body.pwd);
   if(!req.body.user || !req.body.pwd){
@@ -40,7 +40,7 @@ router.post('/', function(req, res, next) {
         res.send(404);
         return;
       }
-      res.send("success");
+      res.send(200);
     });
   });
 });
