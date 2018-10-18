@@ -39,7 +39,7 @@ router.post('/', function(req, res, next) {
         res.send(404);
         return;
       }
-      res.send(200);
+      res.send("success");
     });
   });
 });
