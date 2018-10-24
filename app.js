@@ -2,10 +2,21 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+var morgan = require('morgan');
+
+let config		= require("./config");
+let logger 		= require("./core/logger");
+let moment 		= require("moment");
+let chalk 		= require("chalk");
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+
+logger.info("");
+logger.info(chalk.bold("---------------------[ Server starting at " + moment().format("YYYY-MM-DD HH:mm:ss.SSS") + " ]---------------------------"));
+logger.info("");
+
+logger.info(chalk.bold("Application root path: ") + global.rootPath);
 
 var app = express();
 
@@ -13,7 +24,7 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(logger('dev'));
+app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
