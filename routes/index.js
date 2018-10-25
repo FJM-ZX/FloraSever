@@ -13,5 +13,5 @@ module.exports = function(app, db) {
 	});
 
 	// Handle users routes
-	// require("./users")(app, db);
+	require("./users")(app, db);
 };
