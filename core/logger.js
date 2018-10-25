@@ -13,7 +13,16 @@ let transports = [];
  */
 transports.push(new winston.transports.Console({
     level: config.logging.console.level,
-    format: winston.format.simple(),
+    // format: winston.format.simple(),
+    format: winston.format.combine(
+        winston.format.timestamp({
+            format: 'YYYY-MM-DD HH:mm:ss'
+        }),
+        winston.format.colorize(),
+        winston.format.printf(
+            info => `${info.timestamp} ${info.level}: ${(typeof info.message == 'string')?info.message:JSON.stringify(info.message,null,2)}`
+        )
+      ),
 	colorize: true,
 	prettyPrint: true,
 	handleExceptions: process.env.NODE_ENV === "production"

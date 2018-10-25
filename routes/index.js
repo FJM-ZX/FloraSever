@@ -1,9 +1,17 @@
-var express = require('express');
-var router = express.Router();
+"use strict";
 
-/* GET home page. */
-router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
-});
+let express = require('express');
+let logger = require("../core/logger");
 
-module.exports = router;
+
+module.exports = function(app, db) {
+
+	// Index page
+	app.get("/", function(req, res) {
+    logger.info("---> render index!");
+		res.render('index', { title: 'Express' });
+	});
+
+	// Handle users routes
+	// require("./users")(app, db);
+};

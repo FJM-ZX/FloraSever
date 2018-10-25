@@ -24,12 +24,12 @@ module.exports = {
 	}
 };
 
-const extConfigFile = path.join(global.rootPath, "config.js"); 
+const extConfigFile = path.join(global.rootPath, "extConfig.js"); 
 let externalConfig = {};
 
 try {
 	if (!fs.existsSync(extConfigFile)) {
-		console.warn(chalk.yellow.bold("External production configuration not found!. Create a default `config.js` file..."));
+		console.warn(chalk.yellow.bold("External production configuration not found!. Create a default `extConfig.js` file..."));
 
 		let template;
 		/* global WEBPACK_BUNDLE */
@@ -53,7 +53,7 @@ try {
 	}
 	
 	// if (WEBPACK_BUNDLE) {
-	// 	externalConfig = require("../../config.js");
+	// 	externalConfig = require("../../extConfig.js");
 	// } else {
 		externalConfig = require(extConfigFile);
 	// }

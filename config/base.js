@@ -15,13 +15,15 @@ module.exports = {
 
     rootPath: global.rootPath,
     dataFolder: path.join(global.rootPath, "data"),
+    logFolder: path.join(global.rootPath, "logs"),
     
     uploadLimit: 2 * 1024 * 1024, // 2MB
 
     test: false,
 
 	db: {
-		uri: process.env.MONGO_URI || "mongodb://localhost/" + pkg.config.dbName + "-dev",
+        // uri: process.env.MONGO_URI || "mongodb://localhost/" + pkg.config.dbName + "-dev",
+        uri: process.env.MONGO_URI || "mongodb://localhost/" + pkg.config.dbName,
 		options: {
 			user: "",
 			pass: "",

@@ -1,16 +1,11 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var morgan = require('morgan');
+"use strict";
+
+let debug = require('debug')('florasever:server');
 
 let config		= require("./config");
 let logger 		= require("./core/logger");
 let moment 		= require("moment");
 let chalk 		= require("chalk");
-
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
 
 logger.info("");
 logger.info(chalk.bold("---------------------[ Server starting at " + moment().format("YYYY-MM-DD HH:mm:ss.SSS") + " ]---------------------------"));
@@ -18,35 +13,68 @@ logger.info("");
 
 logger.info(chalk.bold("Application root path: ") + global.rootPath);
 
-var app = express();
+let init		= require("./core/init");
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+let db = require("./core/mongo");
 
-app.use(morgan('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+let app = require("./core/express")(db);
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.listen(config.port, config.ip, function() {
+  logger.info("");
+	logger.info(config.app.title + " v" + config.app.version + " application started!");
+	logger.info("----------------------------------------------");
+	logger.info("Environment:\t" + chalk.underline.bold(process.env.NODE_ENV));
+	logger.info("IP:\t\t" + config.ip);
+	logger.info("Port:\t\t" + config.port);
+	logger.info("Database:\t\t" + config.db.uri);
+	logger.info("");
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+	require("./utils/sysinfo")();
+
+	logger.info("----------------------------------------------");
 });
+app.on('error', onError);
+app.on('listening', onListening);
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  /**
+ * Event listener for HTTP server "error" event.
+ */
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+function onError(error) {
+  if (error.syscall !== 'listen') {
+    throw error;
+  }
 
-module.exports = app;
+  var bind = typeof port === 'string'
+    ? 'Pipe ' + port
+    : 'Port ' + port;
+
+  // handle specific listen errors with friendly messages
+  switch (error.code) {
+    case 'EACCES':
+      logger.error(bind + ' requires elevated privileges');
+      process.exit(1);
+      break;
+    case 'EADDRINUSE':
+      logger.error(bind + ' is already in use');
+      process.exit(1);
+      break;
+    default:
+      throw error;
+  }
+}
+
+/**
+ * Event listener for HTTP server "listening" event.
+ */
+
+function onListening() {
+  var addr = app.address();
+  var bind = typeof addr === 'string'
+    ? 'pipe ' + addr
+    : 'port ' + addr.port;
+  debug('Listening on ' + bind);
+}
+
+
+exports = module.exports = app;
